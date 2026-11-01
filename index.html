@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dunia Emosi Saya - Inside Out Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Luckiest Guy -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Luckiest+Guy&family=Sniglet:wght@800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background-color: #f7f4ea;
+            background-image: radial-gradient(#e2d9c5 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+            user-select: none;
+        }
+
+        .poster-title {
+            font-family: 'Luckiest Guy', 'Sniglet', cursive;
+            letter-spacing: 1px;
+        }
+
+        .char-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .char-card:hover {
+            transform: translateY(-6px) rotate(1deg);
+        }
+
+        .btn-bounce {
+            transition: transform 0.1s ease;
+        }
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+
+        /* Paper Card Poster Border Effect */
+        .poster-card {
+            background-color: #ffffff;
+            border: 4px solid #2d2d2d;
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.8);
+        }
+
+        .poster-card-sm {
+            background-color: #ffffff;
+            border: 3px solid #2d2d2d;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printable-certificate, #printable-certificate * { visibility: visible; }
+            #printable-certificate { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- TOP HEADER WITH INSIDE OUT POSTER THEME -->
+    <header class="bg-amber-100 border-b-4 border-black sticky top-0 z-40 px-4 py-2 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <!-- TITLE LOGO -->
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-yellow-300 border-2 border-black rounded-full flex items-center justify-center font-bold text-xl shadow">
+                    😃
+                </div>
+                <div>
+                    <h1 class="poster-title text-xl md:text-2xl tracking-wide flex space-x-1">
+                        <span class="text-red-500">HARI</span>
+                        <span class="text-blue-500">INI</span>
+                        <span class="text-purple-500">SAYA</span>
+                        <span class="text-emerald-500">RASA...</span>
+                    </h1>
+                    <p class="text-[11px] font-bold text-slate-600">Modul Emosi Tahap 1 (Inside Out Edition)</p>
+                </div>
+            </div>
+
+            <!-- RIGHT CONTAINER: AI CHAT ICON + SCORE BOARD -->
+            <div class="flex items-center space-x-2">
+                <!-- AI CHATBOX BUTTON (DI SEBELAH KIRI BAHAGIAN MARKAH) -->
+                <button onclick="toggleAiModal()" title="Tanya Rakan Emosi AI" class="bg-indigo-400 hover:bg-indigo-500 text-white border-2 border-black rounded-2xl px-3 py-1.5 flex items-center space-x-1 shadow-[3px_3px_0px_#000] btn-bounce">
+                    <span class="text-xl animate-float">🤖</span>
+                    <span class="text-xs font-black hidden sm:inline text-black">AI Chat</span>
+                </button>
+
+                <!-- SCORE BOARD -->
+                <div class="bg-yellow-300 border-3 border-black rounded-2xl px-3 py-1 flex items-center space-x-2 shadow-[3px_3px_0px_#000]">
+                    <span class="text-xl">⭐</span>
+                    <span class="font-extrabold text-black text-lg" id="total-score">0</span>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-800">Mata</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="bg-amber-50 border-b-2 border-black">
+        <div class="max-w-4xl mx-auto px-2 flex overflow-x-auto space-x-1 py-2 no-scrollbar" id="nav-tabs">
+            <button onclick="switchTab(1)" id="tab-btn-1" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-yellow-400 text-black shadow-[3px_3px_0px_#000]">
+                <span class="text-lg">💛</span>
+                <span>1. Belajar</span>
+            </button>
+            <button onclick="switchTab(2)" id="tab-btn-2" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-white text-slate-700 hover:bg-amber-100">
+                <span class="text-lg">🎵</span>
+                <span>2. Nyanyi</span>
+            </button>
+            <button onclick="switchTab(3)" id="tab-btn-3" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-white text-slate-700 hover:bg-amber-100">
+                <span class="text-lg">🧩</span>
+                <span>3. Padan</span>
+            </button>
+            <button onclick="switchTab(4)" id="tab-btn-4" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-white text-slate-700 hover:bg-amber-100">
+                <span class="text-lg">🎮</span>
+                <span>4. Main</span>
+            </button>
+            <button onclick="switchTab(5)" id="tab-btn-5" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-white text-slate-700 hover:bg-amber-100">
+                <span class="text-lg">📝</span>
+                <span>5. Kuiz</span>
+            </button>
+            <button onclick="switchTab(6)" id="tab-btn-6" class="tab-btn flex-1 min-w-[85px] py-2 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center border-2 border-black bg-white text-slate-700 hover:bg-amber-100">
+                <span class="text-lg">🏆</span>
+                <span>6. Sijil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-4xl mx-auto px-3 py-4 flex-grow w-full">
+
+        <!-- ================= SEKSYEN 1: MENGENAL EMOSI ================= -->
+        <section id="section-1" class="tab-content block">
+            <div class="poster-card rounded-3xl p-4 md:p-6">
+                
+                <div class="text-center mb-4">
+                    <span class="bg-yellow-300 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                        Objektif 1 & 2: Kenal & Kawal Emosi
+                    </span>
+                    <h2 class="poster-title text-2xl md:text-3xl text-slate-900 mt-2">PILIH KARAKTER EMOSI SAYA!</h2>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold">Sentuh kad karakter untuk melihat penerangan & cara mengawalnya.</p>
+                </div>
+
+                <!-- EMOTION CARDS GRID -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+                    
+                    <!-- 1. JOY / GEMBIRA -->
+                    <div onclick="showEmotionDetail('joy')" class="char-card poster-card-sm rounded-2xl p-2.5 text-center cursor-pointer bg-yellow-200 hover:bg-yellow-300">
+                        <div class="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
+                            <svg class="w-14 h-14" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="#FDE047" stroke="#000" stroke-width="4"/>
+                                <path d="M 25 35 Q 35 20 45 35" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M 55 35 Q 65 20 75 35" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                                <circle cx="35" cy="42" r="5" fill="#000"/>
+                                <circle cx="65" cy="42" r="5" fill="#000"/>
+                                <path d="M 30 60 Q 50 85 70 60 Z" fill="#EF4444" stroke="#000" stroke-width="3"/>
+                            </svg>
+                        </div>
+                        <h3 class="poster-title text-base text-yellow-900">GEMBIRA</h3>
+                        <span class="text-[10px] font-bold text-yellow-800 bg-yellow-100 border border-black rounded-md px-1.5 py-0.5 inline-block">Joy</span>
+                    </div>
+
+                    <!-- 2. ANGER / MARAH -->
+                    <div onclick="showEmotionDetail('anger')" class="char-card poster-card-sm rounded-2xl p-2.5 text-center cursor-pointer bg-red-200 hover:bg-red-300">
+                        <div class="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
+                            <svg class="w-14 h-14" viewBox="0 0 100 100">
+                                <rect x="10" y="15" width="80" height="75" rx="15" fill="#EF4444" stroke="#000" stroke-width="4"/>
+                                <path d="M 20 30 L 45 42" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                                <path d="M 80 30 L 55 42" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                                <circle cx="35" cy="48" r="6" fill="#FFF" stroke="#000" stroke-width="2"/>
+                                <circle cx="35" cy="48" r="2" fill="#000"/>
+                                <circle cx="65" cy="48" r="6" fill="#FFF" stroke="#000" stroke-width="2"/>
+                                <circle cx="65" cy="48" r="2" fill="#000"/>
+                                <rect x="30" y="65" width="40" height="12" rx="4" fill="#FFF" stroke="#000" stroke-width="3"/>
+                                <path d="M 30 71 L 70 71" stroke="#000" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="poster-title text-base text-red-900">MARAH</h3>
+                        <span class="text-[10px] font-bold text-red-800 bg-red-100 border border-black rounded-md px-1.5 py-0.5 inline-block">Anger</span>
+                    </div>
+
+                    <!-- 3. SADNESS / SEDIH -->
+                    <div onclick="showEmotionDetail('sadness')" class="char-card poster-card-sm rounded-2xl p-2.5 text-center cursor-pointer bg-blue-200 hover:bg-blue-300">
+                        <div class="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
+                            <svg class="w-14 h-14" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="#60A5FA" stroke="#000" stroke-width="4"/>
+                                <circle cx="35" cy="45" r="14" fill="none" stroke="#000" stroke-width="4"/>
+                                <circle cx="65" cy="45" r="14" fill="none" stroke="#000" stroke-width="4"/>
+                                <line x1="49" y1="45" x2="51" y2="45" stroke="#000" stroke-width="4"/>
+                                <circle cx="35" cy="45" r="3" fill="#000"/>
+                                <circle cx="65" cy="45" r="3" fill="#000"/>
+                                <path d="M 35 72 Q 50 60 65 72" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M 75 55 Q 75 65 70 65 Q 65 65 65 55 Z" fill="#3B82F6"/>
+                            </svg>
+                        </div>
+                        <h3 class="poster-title text-base text-blue-900">SEDIH</h3>
+                        <span class="text-[10px] font-bold text-blue-800 bg-blue-100 border border-black rounded-md px-1.5 py-0.5 inline-block">Sadness</span>
+                    </div>
+
+                    <!-- 4. FEAR / TAKUT -->
+                    <div onclick="showEmotionDetail('fear')" class="char-card poster-card-sm rounded-2xl p-2.5 text-center cursor-pointer bg-purple-200 hover:bg-purple-300">
+                        <div class="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
+                            <svg class="w-14 h-14" viewBox="0 0 100 100">
+                                <path d="M 25 10 Q 50 5 75 10 L 70 90 Q 50 95 30 90 Z" fill="#C084FC" stroke="#000" stroke-width="4"/>
+                                <circle cx="38" cy="38" r="10" fill="#FFF" stroke="#000" stroke-width="3"/>
+                                <circle cx="38" cy="38" r="3" fill="#000"/>
+                                <circle cx="62" cy="38" r="10" fill="#FFF" stroke="#000" stroke-width="3"/>
+                                <circle cx="62" cy="38" r="3" fill="#000"/>
+                                <ellipse cx="50" cy="68" rx="12" ry="8" fill="#000"/>
+                            </svg>
+                        </div>
+                        <h3 class="poster-title text-base text-purple-900">TAKUT</h3>
+                        <span class="text-[10px] font-bold text-purple-800 bg-purple-100 border border-black rounded-md px-1.5 py-0.5 inline-block">Fear</span>
+                    </div>
+
+                    <!-- 5. EMBARRASSMENT / MALU -->
+                    <div onclick="showEmotionDetail('embarrassment')" class="char-card poster-card-sm rounded-2xl p-2.5 text-center cursor-pointer bg-pink-200 hover:bg-pink-300 col-span-2 md:col-span-1">
+                        <div class="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
+                            <svg class="w-14 h-14" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="#F472B6" stroke="#000" stroke-width="4"/>
+                                <circle cx="28" cy="52" r="10" fill="#F43F5E" opacity="0.6"/>
+                                <circle cx="72" cy="52" r="10" fill="#F43F5E" opacity="0.6"/>
+                                <path d="M 30 38 Q 40 32 45 40" stroke="#000" stroke-width="3" fill="none"/>
+                                <path d="M 70 38 Q 60 32 55 40" stroke="#000" stroke-width="3" fill="none"/>
+                                <circle cx="40" cy="44" r="3" fill="#000"/>
+                                <circle cx="60" cy="44" r="3" fill="#000"/>
+                                <path d="M 40 68 Q 50 63 60 68" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="poster-title text-base text-pink-900">MALU</h3>
+                        <span class="text-[10px] font-bold text-pink-800 bg-pink-100 border border-black rounded-md px-1.5 py-0.5 inline-block">Embarrassed</span>
+                    </div>
+
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-2 mb-4">
+                    <span class="bg-orange-100 border border-orange-400 text-orange-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">🟧 Anxiety (Bimbang)</span>
+                    <span class="bg-emerald-100 border border-emerald-400 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">🟩 Disgust (Benci)</span>
+                    <span class="bg-teal-100 border border-teal-400 text-teal-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">🩵 Envy (Cemburu)</span>
+                    <span class="bg-indigo-100 border border-indigo-400 text-indigo-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">🟦 Bored (Bosan)</span>
+                </div>
+
+                <!-- DYNAMIC INFO BOX -->
+                <div id="info-box" class="bg-amber-100 border-3 border-black rounded-2xl p-4 shadow-[4px_4px_0px_#000]">
+                    <div class="flex items-start space-x-3">
+                        <span id="info-icon" class="text-3xl">💡</span>
+                        <div>
+                            <h4 id="info-title" class="poster-title text-lg text-black">Klik Mana-mana Kad Emosi Di Atas!</h4>
+                            <p id="info-desc" class="text-xs md:text-sm text-slate-800 font-medium mt-1">
+                                Setiap emosi dalam kepala kita adalah normal. Belajar mengawalnya menjadikan kita anak yang bijak dan berani!
+                            </p>
+                            <div id="info-action" class="mt-2 text-xs font-bold text-emerald-900 bg-emerald-200 border border-black p-2 rounded-xl hidden">
+                                🧘 Cara Kawal: Tarik nafas dalam-dalam, mengira 1 hingga 10 & bertenang!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-right">
+                    <button onclick="switchTab(2)" class="bg-emerald-400 hover:bg-emerald-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs md:text-sm shadow-[3px_3px_0px_#000] btn-bounce">
+                        Seterusnya: Video Nyanyian 🎵 ➔
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SEKSYEN 2: VIDEO NYANYIAN YOUTUBE ================= -->
+        <section id="section-2" class="tab-content hidden">
+            <div class="poster-card rounded-3xl p-4 md:p-6">
+                
+                <div class="text-center mb-3">
+                    <span class="bg-indigo-200 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                        Nyanyian Interaktif
+                    </span>
+                    <h2 class="poster-title text-2xl md:text-3xl text-indigo-900 mt-2">MARI BERNYANYI LAGU EMOSI 🎶</h2>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold">Tonton video Chichi & Chacha di bawah dan bernyanyi bersama-sama!</p>
+                </div>
+
+                <!-- YOUTUBE IFRAME (CHICHI DAN CHACHA - LAGU EMOSI) -->
+                <div class="my-4 flex justify-center">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/1dm2htUvAtM" title="Chichi dan Chacha - Season 3 - Emosi - Lagu Tema" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius:16px; border:3px solid #000; box-shadow: 4px 4px 0px #000;"></iframe>
+                </div>
+
+                <!-- INTERACTIVE QUICK QUESTION AFTER VIDEO -->
+                <div class="bg-indigo-100 border-2 border-black rounded-2xl p-3 text-center mb-4">
+                    <p class="text-xs md:text-sm font-bold text-indigo-950 mb-2">
+                        ❓ Apakah yang perlu kita buat dalam lagu apabila rasa MARAH?
+                    </p>
+                    <div class="flex justify-center space-x-2">
+                        <button onclick="checkSongAnswer(true, this)" class="bg-white hover:bg-emerald-200 border-2 border-black px-3 py-1.5 rounded-xl text-xs font-bold btn-bounce shadow-[2px_2px_0px_#000]">
+                            💨 Tarik Nafas & Bertenang
+                        </button>
+                        <button onclick="checkSongAnswer(false, this)" class="bg-white hover:bg-red-200 border-2 border-black px-3 py-1.5 rounded-xl text-xs font-bold btn-bounce shadow-[2px_2px_0px_#000]">
+                            💥 Baling Barang
+                        </button>
+                    </div>
+                    <p id="song-feedback" class="text-xs font-bold mt-2 hidden"></p>
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="switchTab(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-black font-black py-2 px-4 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        ⬅ Kembali
+                    </button>
+                    <button onclick="switchTab(3)" class="bg-indigo-400 hover:bg-indigo-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs md:text-sm btn-bounce shadow-[3px_3px_0px_#000]">
+                        Aktiviti Padanan ➔
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SEKSYEN 3: PENGUKUHAN ================= -->
+        <section id="section-3" class="tab-content hidden">
+            <div class="poster-card rounded-3xl p-4 md:p-6">
+                
+                <div class="text-center mb-3">
+                    <span class="bg-sky-200 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                        Objektif 3: Padankan Situasi
+                    </span>
+                    <h2 class="poster-title text-2xl md:text-3xl text-sky-900 mt-2">PADANKAN SITUASI & EMOSI</h2>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold">Pilih emosi yang betul untuk setiap situasi berikut (+10 mata):</p>
+                </div>
+
+                <div id="matching-container" class="space-y-3 mb-4">
+                    <!-- JavaScript Render -->
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="switchTab(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-black font-black py-2 px-4 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        ⬅ Kembali
+                    </button>
+                    <button onclick="switchTab(4)" class="bg-sky-400 hover:bg-sky-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs md:text-sm btn-bounce shadow-[3px_3px_0px_#000]">
+                        Main Permainan ➔
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SEKSYEN 4: PERMAINAN INTERAKTIF ================= -->
+        <section id="section-4" class="tab-content hidden">
+            <div class="poster-card rounded-3xl p-4 md:p-6 text-center">
+                
+                <span class="bg-purple-200 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                    Mini Game Inside Out
+                </span>
+                <h2 class="poster-title text-2xl md:text-3xl text-purple-900 mt-2">🎮 PERMAINAN RODA EMOSI</h2>
+                <p class="text-xs md:text-sm text-slate-600 font-semibold mb-3">Putar roda emosi, dapatkan karakter dan jawab soalan cabaran!</p>
+
+                <div class="flex flex-col items-center justify-center">
+                    <div class="relative w-44 h-44 md:w-52 md:h-52 mb-3">
+                        <div id="wheel" class="w-full h-full rounded-full border-4 border-black bg-gradient-to-tr from-yellow-300 via-pink-300 to-purple-300 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#000] transition-transform duration-1000 ease-out">
+                            <span id="wheel-emoji">❓</span>
+                        </div>
+                    </div>
+
+                    <button id="spin-btn" onclick="spinWheel()" class="bg-purple-400 hover:bg-purple-500 text-black border-2 border-black font-black py-2.5 px-6 rounded-2xl text-sm btn-bounce shadow-[4px_4px_0px_#000] mb-3">
+                        🎰 PUTAR RODA!
+                    </button>
+
+                    <div id="game-question-box" class="w-full bg-purple-100 border-2 border-black rounded-2xl p-3.5 text-left hidden">
+                        <p class="text-[11px] text-purple-900 font-black uppercase tracking-wider mb-1">Soalan Cabaran Roda:</p>
+                        <p id="game-question-text" class="font-bold text-slate-900 text-xs md:text-sm mb-2"></p>
+                        <div id="game-options" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-between">
+                    <button onclick="switchTab(3)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-black font-black py-2 px-4 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        ⬅ Kembali
+                    </button>
+                    <button onclick="switchTab(5)" class="bg-purple-400 hover:bg-purple-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs md:text-sm btn-bounce shadow-[3px_3px_0px_#000]">
+                        Jawab Kuiz ➔
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SEKSYEN 5: KUIZ PENILAIAN ================= -->
+        <section id="section-5" class="tab-content hidden">
+            <div class="poster-card rounded-3xl p-4 md:p-6">
+                
+                <div class="text-center mb-4">
+                    <span class="bg-rose-200 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                        Penilaian Uji Minda
+                    </span>
+                    <h2 class="poster-title text-2xl md:text-3xl text-rose-900 mt-2">KUIZ EMOSI SAYA</h2>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold">Jawab 3 soalan di bawah dengan tepat (+10 mata setiap soalan):</p>
+                </div>
+
+                <div id="quiz-container" class="space-y-4 mb-4">
+                    <!-- Dynamic rendering -->
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="switchTab(4)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-black font-black py-2 px-4 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        ⬅ Kembali
+                    </button>
+                    <button onclick="switchTab(6)" class="bg-rose-400 hover:bg-rose-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs md:text-sm btn-bounce shadow-[3px_3px_0px_#000]">
+                        Lihat Sijil ➔
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SEKSYEN 6: TAMATAN KURSUS & SIJIL ================= -->
+        <section id="section-6" class="tab-content hidden">
+            <div class="poster-card rounded-3xl p-4 md:p-6">
+                
+                <div class="text-center mb-4">
+                    <span class="bg-yellow-300 border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+                        Tahniah! Anda Hebat
+                    </span>
+                    <h2 class="poster-title text-2xl md:text-3xl text-yellow-900 mt-2">TAMATAN KURSUS & SIJIL</h2>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold">Masukkan nama & sekolah anda untuk menjana Sijil Pencapaian Inside Out!</p>
+                </div>
+
+                <div class="max-w-md mx-auto bg-amber-100 border-2 border-black p-3.5 rounded-2xl mb-5 shadow-[3px_3px_0px_#000]">
+                    <div class="space-y-2">
+                        <div>
+                            <label for="student-name-input" class="block text-xs font-black text-slate-800 mb-1">Nama Murid:</label>
+                            <input type="text" id="student-name-input" placeholder="Contoh: Adam Rayyan" class="w-full px-3 py-1.5 text-xs border-2 border-black rounded-xl focus:outline-none">
+                        </div>
+                        <div>
+                            <label for="school-name-input" class="block text-xs font-black text-slate-800 mb-1">Nama Sekolah:</label>
+                            <input type="text" id="school-name-input" placeholder="Contoh: SK Taman Ilmu" class="w-full px-3 py-1.5 text-xs border-2 border-black rounded-xl focus:outline-none">
+                        </div>
+                        <button onclick="generateCertificate()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black font-black py-2 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                            🏆 Jana Sijil Pencapaian
+                        </button>
+                    </div>
+                </div>
+
+                <div id="printable-certificate" class="bg-amber-50 border-8 border-black rounded-3xl p-5 text-center shadow-[6px_6px_0px_#000] relative max-w-2xl mx-auto overflow-hidden">
+                    
+                    <div class="flex justify-center space-x-3 text-2xl mb-1">
+                        <span>💛</span><span>🔴</span><span>💙</span><span>💜</span><span>🩷</span>
+                    </div>
+
+                    <h3 class="poster-title text-xs text-amber-800 tracking-widest uppercase">SIJIL PENCAPAIAN MINI</h3>
+                    <h1 class="poster-title text-2xl md:text-3xl text-red-600 mb-1">DUNIA EMOSI SAYA</h1>
+                    <p class="text-[11px] text-slate-600 font-bold mb-3">Dengan ini diperakukan bahawa</p>
+
+                    <p id="cert-name" class="poster-title text-xl md:text-2xl text-slate-900 underline decoration-yellow-400 decoration-4 mb-1">
+                        [ Nama Murid ]
+                    </p>
+                    <p id="cert-school" class="text-xs font-bold text-slate-600 mb-3">
+                        SK Taman Ilmu
+                    </p>
+
+                    <p class="text-xs text-slate-700 font-medium max-w-md mx-auto mb-3">
+                        Telah berjaya menyelesaikan Modul Pembelajaran Mini Emosi (Tahap 1 - Inside Out Edition) serta menunjukkan penguasaan cemerlang dalam mengawal emosi.
+                    </p>
+
+                    <div class="inline-block bg-yellow-300 border-2 border-black rounded-2xl px-5 py-1.5 mb-3 shadow-[3px_3px_0px_#000]">
+                        <span class="text-[10px] text-black font-black block">JUMLAH MARKAH TERKUMPUL:</span>
+                        <span id="cert-score" class="poster-title text-2xl text-black">0</span>
+                        <span class="text-[10px] font-black"> / 100 MATA</span>
+                    </div>
+
+                    <div class="flex justify-around items-center pt-3 border-t-2 border-black text-[10px] text-slate-600 font-bold">
+                        <div>
+                            <p class="text-black">Modul E-Pembelajaran</p>
+                            <p>Inside Out Edition</p>
+                        </div>
+                        <div class="text-2xl">🏅</div>
+                        <div>
+                            <p class="text-black">Tahap 1 Sekolah Rendah</p>
+                            <p>Tahun 1, 2 & 3</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-4 text-center flex justify-center space-x-2">
+                    <button onclick="window.print()" class="bg-blue-400 hover:bg-blue-500 text-black border-2 border-black font-black py-2 px-5 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        🖨️ Cetak / Simpan Sijil
+                    </button>
+                    <button onclick="restartCourse()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-black font-black py-2 px-4 rounded-xl text-xs btn-bounce shadow-[2px_2px_0px_#000]">
+                        🔄 Mula Semula
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AI CHATBOX POP-UP MODAL (KELUAR APABILA IKON DITEKAN) -->
+    <div id="ai-chat-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-amber-100 border-4 border-black rounded-3xl w-full max-w-md p-4 shadow-[6px_6px_0px_#000] relative animate-float">
+            
+            <!-- MODAL HEADER -->
+            <div class="flex justify-between items-center pb-2 border-b-2 border-black mb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🤖</span>
+                    <div>
+                        <h3 class="poster-title text-lg text-slate-900">RAKAN EMOSI AI</h3>
+                        <p class="text-[10px] font-bold text-slate-600">Luahkan perasaan atau tanya soalan emosi anda!</p>
+                    </div>
+                </div>
+                <!-- BUTANG TUTUP -->
+                <button onclick="toggleAiModal()" class="bg-red-400 hover:bg-red-500 text-black border-2 border-black font-black w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-[2px_2px_0px_#000] btn-bounce">
+                    ✖
+                </button>
+            </div>
+
+            <!-- CHAT HISTORY DISPLAY -->
+            <div id="ai-chat-history" class="h-64 overflow-y-auto bg-white border-2 border-black rounded-xl p-3 space-y-2 mb-3 text-xs">
+                <div class="flex items-start space-x-2">
+                    <span class="bg-yellow-300 border border-black rounded-full p-1 text-xs">🤖</span>
+                    <div class="bg-amber-50 border border-black p-2 rounded-xl text-slate-800 max-w-[80%] font-medium">
+                        Hai! Saya Rakan Emosi AI 🤖. Apa perasaan anda hari ini? Anda boleh beritahu saya atau tanya cara mengawal emosi!
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAT INPUT FORM -->
+            <div class="flex gap-2">
+                <input type="text" id="ai-chat-input" onkeypress="handleChatKeyPress(event)" placeholder="Tulis mesej anda di sini..." class="flex-grow px-3 py-2 border-2 border-black rounded-xl text-xs focus:outline-none focus:bg-amber-50 font-medium">
+                <button onclick="sendChatMessage()" class="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black px-4 py-2 rounded-xl text-xs font-black shadow-[2px_2px_0px_#000] btn-bounce">
+                    Hantar 🚀
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-amber-100 border-t-2 border-black py-2 text-center text-[10px] font-bold text-slate-700">
+        <p>E-Kursus Mini Emosi • Inspirasi Poster Inside Out • Khas untuk Murid Tahap 1</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentScore = 0;
+        let matchedItems = new Set();
+        let answeredQuiz = new Set();
+        let songAnswered = false;
+
+        const emotionData = {
+            'joy': {
+                title: '💛 GEMBIRA (Joy)',
+                desc: 'Rasa gembira membuatkan kita tersenyum dan bersemangat bila belajar atau bermain!',
+                action: '💖 Cara kekalkan: Kongsikan senyuman & ucapkan "Terima kasih" kepada rakan.'
+            },
+            'anger': {
+                title: '🔴 MARAH (Anger)',
+                desc: 'Rasa marah berlaku bila perkara tidak berjalan seperti yang diingini atau mainan direbut.',
+                action: '🧘 Cara kawal: Tarik nafas dalam-dalam, mengira 1 hingga 10 & minum air.'
+            },
+            'sadness': {
+                title: '💙 SEDIH (Sadness)',
+                desc: 'Rasa sedih bila kehilangan barang atau berpisah dengan rakan. Ini perkara biasa.',
+                action: '🤝 Cara kawal: Luahkan perasaan kepada ibu bapa atau guru kesayangan.'
+            },
+            'fear': {
+                title: '💜 TAKUT (Fear)',
+                desc: 'Rasa takut bila berada dalam kegelapan atau mendengar bunyi guruh kuat.',
+                action: '💪 Cara kawal: Pegang tangan ibu bapa dan cakap "Saya berani!".'
+            },
+            'embarrassment': {
+                title: '🩷 MALU (Embarrassed)',
+                desc: 'Rasa malu bila bercakap di depan ramai orang atau bila buat kesilapan.',
+                action: '😊 Cara kawal: Senyum, bernafas perlahan dan percaya pada diri sendiri!'
+            }
+        };
+
+        const matchingSituations = [
+            { id: 1, text: "🎁 Dapat hadiah hari lahir dari ibu bapa", correct: "gembira", options: ["gembira", "sedih", "marah"] },
+            { id: 2, text: "🧸 Mainan kesayangan rosak atau patah", correct: "sedih", options: ["gembira", "sedih", "takut"] },
+            { id: 3, text: "⚡ Mendengar bunyi guruh yang sangat kuat", correct: "takut", options: ["malu", "takut", "gembira"] },
+            { id: 4, text: "🙋 Dipanggil membaca di hadapan bilik darjah", correct: "malu", options: ["marah", "malu", "sedih"] },
+            { id: 5, text: "😡 Pensel warna direbut tanpa kebenaran", correct: "marah", options: ["marah", "gembira", "malu"] }
+        ];
+
+        const gameQuestions = {
+            '😃': {
+                question: 'Apakah yang membuatkan karakter JOY (Gembira) gembira?',
+                options: [
+                    { text: 'Mendapat pujian & kawan baru', correct: true },
+                    { text: 'Jatuh dalam keledai', correct: false }
+                ]
+            },
+            '😡': {
+                question: 'Apakah cara terbaik mengawal ANGER (Marah)?',
+                options: [
+                    { text: 'Tarik nafas & mengira 1 hingga 10', correct: true },
+                    { text: 'Menjerit pada rakan', correct: false }
+                ]
+            },
+            '😢': {
+                question: 'Apakah yang patut kita buat bila SADNESS (Sedih)?',
+                options: [
+                    { text: 'Bercakap dengan ibu bapa / guru', correct: true },
+                    { text: 'Simpan sendiri & merajuk', correct: false }
+                ]
+            },
+            '😱': {
+                question: 'Apakah cara mengatasi FEAR (Takut) gelap?',
+                options: [
+                    { text: 'Pegang tangan ibu bapa & buka lampu', correct: true },
+                    { text: 'Lari keluar rumah', correct: false }
+                ]
+            }
+        };
+
+        const quizQuestions = [
+            {
+                id: 1,
+                question: "1. Apakah tindakan terbaik apabila anda rasa MARAH 😡?",
+                options: [
+                    { text: "A. Jerit dengan kuat pada rakan", correct: false },
+                    { text: "B. Tarik nafas dalam-dalam dan mengira 1-10", correct: true },
+                    { text: "C. Baling barang ke lantai", correct: false }
+                ],
+                exp: "Syabas! Tarik nafas dan mengira 1-10 menenangkan minda."
+            },
+            {
+                id: 2,
+                question: "2. Apakah perasaan Ali apabila mainan kesayangannya rosak 🧸?",
+                options: [
+                    { text: "A. Sedih 😢", correct: true },
+                    { text: "B. Gembira 😊", correct: false },
+                    { text: "C. Malu 😳", correct: false }
+                ],
+                exp: "Tepat! Hilang atau rosak barang kesayangan menyebabkan rasa sedih."
+            },
+            {
+                id: 3,
+                question: "3. Mengapakah penting untuk kita mengenal emosi sendiri?",
+                options: [
+                    { text: "A. Supaya boleh bergaduh", correct: false },
+                    { text: "B. Supaya dapat mengawal diri dengan baik & gembira", correct: true },
+                    { text: "C. Supaya orang takut pada kita", correct: false }
+                ],
+                exp: "Hebat! Mengenal emosi membantu kita hidup harmoni dan gembira."
+            }
+        ];
+
+        /* AI CHATBOX MODAL TOGGLE */
+        function toggleAiModal() {
+            const modal = document.getElementById('ai-chat-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        /* AI CHATBOX LOGIC */
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('ai-chat-input');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            const chatHistory = document.getElementById('ai-chat-history');
+
+            // Append User Message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'flex items-start justify-end space-x-2';
+            userBubble.innerHTML = `
+                <div class="bg-indigo-500 text-white p-2 rounded-xl max-w-[80%] font-medium">
+                    ${escapeHtml(userMsg)}
+                </div>
+                <span class="bg-indigo-200 border border-black rounded-full p-1 text-xs">🧒</span>
+            `;
+            chatHistory.appendChild(userBubble);
+            input.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Generate AI Response
+            setTimeout(() => {
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'flex items-start space-x-2';
+                const reply = generateAIResponse(userMsg);
+                aiBubble.innerHTML = `
+                    <span class="bg-yellow-300 border border-black rounded-full p-1 text-xs">🤖</span>
+                    <div class="bg-amber-50 border border-black p-2 rounded-xl text-slate-800 max-w-[80%] font-medium">
+                        ${reply}
+                    </div>
+                `;
+                chatHistory.appendChild(aiBubble);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }, 600);
+        }
+
+        function generateAIResponse(text) {
+            const lower = text.toLowerCase();
+            if (lower.includes('marah') || lower.includes('geram')) {
+                return "Bila rasa marah, cuba tarik nafas perlahan-lahan 💨 dan kira dari 1 hingga 10. Mengucap atau minum air juga sangat membantu! 😊";
+            } else if (lower.includes('sedih') || lower.includes('menangis')) {
+                return "Tak apa untuk rasa sedih 💙. Anda boleh luahkan kepada ibu bapa atau guru kesayangan. Ingat, anda anak yang hebat!";
+            } else if (lower.includes('takut') || lower.includes('gelap')) {
+                return "Bila rasa takut 💜, pegang tangan ibu bapa atau buka lampu. Katakan pada diri sendiri: 'Saya anak yang berani!' 🌟";
+            } else if (lower.includes('gembira') || lower.includes('senang') || lower.includes('suka')) {
+                return "Wah, seronoknya rasa gembira! 💛 Jangan lupa kongsikan senyuman anda dengan kawan-kawan hari ini ya!";
+            } else if (lower.includes('malu')) {
+                return "Rasa malu itu normal 🩷. Ambil nafas dan senyum! Anda boleh lakukan yang terbaik!";
+            } else if (lower.includes('hai') || lower.includes('hello') || lower.includes('assalam')) {
+                return "Hai! Apa perasaan anda hari ini? Boleh beritahu saya jika anda rasa gembira, marah, sedih, atau takut! 😊";
+            } else {
+                return "Terima kasih kerana berkongsi dengan saya! 🌟 Ingat, semua emosi adalah normal. Yang penting kita tahu cara mengawalnya dengan baik!";
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        /* TAB SWITCHING LOGIC */
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-400', 'shadow-[3px_3px_0px_#000]');
+                btn.classList.add('bg-white');
+            });
+
+            const targetSection = document.getElementById(`section-${tabIndex}`);
+            if (targetSection) targetSection.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white');
+                activeBtn.classList.add('bg-yellow-400', 'shadow-[3px_3px_0px_#000]');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showEmotionDetail(key) {
+            const data = emotionData[key];
+            if (!data) return;
+
+            document.getElementById('info-title').innerText = data.title;
+            document.getElementById('info-desc').innerText = data.desc;
+            
+            const actionBox = document.getElementById('info-action');
+            actionBox.innerText = data.action;
+            actionBox.classList.remove('hidden');
+        }
+
+        function addPoints(pts) {
+            currentScore += pts;
+            if (currentScore > 100) currentScore = 100;
+            document.getElementById('total-score').innerText = currentScore;
+            document.getElementById('cert-score').innerText = currentScore;
+        }
+
+        function checkSongAnswer(isCorrect, btn) {
+            if (songAnswered) return;
+            const fb = document.getElementById('song-feedback');
+            songAnswered = true;
+
+            if (isCorrect) {
+                addPoints(10);
+                fb.innerText = "✅ Tepat sekali! Tarik nafas dan bertenang adalah cara mengawal marah.";
+                fb.className = "text-xs font-bold mt-2 text-emerald-800";
+            } else {
+                fb.innerText = "❌ Cuba lagi! Dalam lagu, kita perlu bertenang.";
+                fb.className = "text-xs font-bold mt-2 text-red-800";
+            }
+            fb.classList.remove('hidden');
+        }
+
+        function renderMatchingActivity() {
+            const container = document.getElementById('matching-container');
+            container.innerHTML = '';
+
+            matchingSituations.forEach((item) => {
+                const isMatched = matchedItems.has(item.id);
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-2xl border-2 border-black transition-all ${isMatched ? 'bg-emerald-100' : 'bg-white'}`;
+                
+                let optionsHtml = item.options.map(opt => `
+                    <button 
+                        onclick="checkMatch(${item.id}, '${opt}', '${item.correct}', this)"
+                        ${isMatched ? 'disabled' : ''}
+                        class="px-2.5 py-1 rounded-xl text-xs font-bold border-2 border-black capitalize btn-bounce ${isMatched && opt === item.correct ? 'bg-emerald-400 text-black' : 'bg-amber-100 hover:bg-amber-200 text-black'}">
+                        ${opt}
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <p class="text-xs md:text-sm font-bold text-slate-900">📌 ${item.text}</p>
+                        <div class="flex space-x-1 justify-end">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkMatch(id, selected, correct, btn) {
+            if (matchedItems.has(id)) return;
+
+            if (selected === correct) {
+                matchedItems.add(id);
+                addPoints(10);
+                renderMatchingActivity();
+            } else {
+                btn.classList.add('bg-red-300');
+                setTimeout(() => btn.classList.remove('bg-red-300'), 600);
+            }
+        }
+
+        function spinWheel() {
+            const wheel = document.getElementById('wheel');
+            const spinBtn = document.getElementById('spin-btn');
+            const emojis = Object.keys(gameQuestions);
+
+            spinBtn.disabled = true;
+            const randomDeg = 720 + Math.floor(Math.random() * 360);
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+            setTimeout(() => {
+                const selectedEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+                document.getElementById('wheel-emoji').innerText = selectedEmoji;
+                showGameQuestion(selectedEmoji);
+                spinBtn.disabled = false;
+            }, 1000);
+        }
+
+        function showGameQuestion(emoji) {
+            const qData = gameQuestions[emoji];
+            if (!qData) return;
+
+            const box = document.getElementById('game-question-box');
+            const qText = document.getElementById('game-question-text');
+            const optionsDiv = document.getElementById('game-options');
+
+            qText.innerText = qData.question;
+            optionsDiv.innerHTML = '';
+
+            qData.options.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left bg-white border-2 border-black p-2 rounded-xl text-xs font-bold text-black btn-bounce shadow-[2px_2px_0px_#000]';
+                btn.innerText = opt.text;
+                btn.onclick = () => {
+                    if (opt.correct) {
+                        btn.className = 'w-full text-left bg-emerald-400 border-2 border-black p-2 rounded-xl text-xs font-bold text-black';
+                        addPoints(10);
+                        setTimeout(() => box.classList.add('hidden'), 1000);
+                    } else {
+                        btn.className = 'w-full text-left bg-red-300 border-2 border-black p-2 rounded-xl text-xs font-bold text-black';
+                    }
+                };
+                optionsDiv.appendChild(btn);
+            });
+
+            box.classList.remove('hidden');
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q) => {
+                const isAnswered = answeredQuiz.has(q.id);
+                const qCard = document.createElement('div');
+                qCard.className = 'bg-amber-50 border-2 border-black rounded-2xl p-3.5 shadow-[3px_3px_0px_#000]';
+
+                let optionsHtml = q.options.map((opt) => `
+                    <button 
+                        onclick="checkQuizAnswer(${q.id}, ${opt.correct}, this)"
+                        ${isAnswered ? 'disabled' : ''}
+                        class="w-full text-left bg-white hover:bg-yellow-100 border-2 border-black rounded-xl p-2 text-xs font-bold text-slate-800 transition-all btn-bounce mb-1">
+                        ${opt.text}
+                    </button>
+                `).join('');
+
+                qCard.innerHTML = `
+                    <h4 class="font-bold text-slate-900 text-xs md:text-sm mb-2">${q.question}</h4>
+                    <div class="space-y-1 mb-1">
+                        ${optionsHtml}
+                    </div>
+                    <div id="quiz-fb-${q.id}" class="hidden mt-2 p-2 rounded-xl text-xs font-bold border-2 border-black"></div>
+                `;
+
+                container.appendChild(qCard);
+            });
+        }
+
+        function checkQuizAnswer(qId, isCorrect, btn) {
+            if (answeredQuiz.has(qId)) return;
+            answeredQuiz.add(qId);
+
+            const fb = document.getElementById(`quiz-fb-${qId}`);
+            const qData = quizQuestions.find(q => q.id === qId);
+
+            if (isCorrect) {
+                btn.className = 'w-full text-left bg-emerald-400 border-2 border-black rounded-xl p-2 text-xs font-bold text-black mb-1';
+                fb.className = 'mt-2 p-2 rounded-xl text-xs font-bold border-2 border-black bg-emerald-200 text-emerald-950';
+                fb.innerText = `✅ ` + qData.exp;
+                addPoints(10);
+            } else {
+                btn.className = 'w-full text-left bg-red-400 border-2 border-black rounded-xl p-2 text-xs font-bold text-black mb-1';
+                fb.className = 'mt-2 p-2 rounded-xl text-xs font-bold border-2 border-black bg-rose-200 text-rose-950';
+                fb.innerText = `❌ Cuba lagi! Pilihan yang betul membantu kita bertenang.`;
+            }
+
+            fb.classList.remove('hidden');
+        }
+
+        function generateCertificate() {
+            const nameInput = document.getElementById('student-name-input');
+            const schoolInput = document.getElementById('school-name-input');
+            
+            const certName = document.getElementById('cert-name');
+            const certSchool = document.getElementById('cert-school');
+
+            if (nameInput.value.trim() !== '') {
+                certName.innerText = nameInput.value.trim();
+            } else {
+                certName.innerText = "Murid Cemerlang";
+            }
+
+            if (schoolInput.value.trim() !== '') {
+                certSchool.innerText = schoolInput.value.trim();
+            } else {
+                certSchool.innerText = "SK Taman Ilmu";
+            }
+        }
+
+        function restartCourse() {
+            currentScore = 0;
+            matchedItems.clear();
+            answeredQuiz.clear();
+            songAnswered = false;
+
+            document.getElementById('total-score').innerText = '0';
+            document.getElementById('cert-score').innerText = '0';
+            document.getElementById('student-name-input').value = '';
+            document.getElementById('school-name-input').value = '';
+            document.getElementById('cert-name').innerText = '[ Nama Murid ]';
+
+            renderMatchingActivity();
+            renderQuiz();
+            switchTab(1);
+        }
+
+        window.onload = function() {
+            renderMatchingActivity();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
